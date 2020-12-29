@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 
 import Card from '../UI/Card';
+import LoadingIndicator from '../UI/LoadingIndicator';
 import './IngredientForm.css';
 
-const IngredientForm = React.memo(props => {
-    const inputState = useState({
-        title: '',
-        amount: ''
-    });
+const IngredientForm = React.memo((props) => {
+    const [enteredTitle, setEnteredTitle] = useState('');
+    const [enteredAmount, setEnteredAmount] = useState('');
 
-    const submitHandler = event => {
+    const submitHandler = (event) => {
         event.preventDefault();
-        // ...
+        props.onAddIngredient({
+            title: enteredTitle,
+            amount: enteredAmount
+        });
     };
 
     return (
@@ -23,13 +25,9 @@ const IngredientForm = React.memo(props => {
                         <input
                             type="text"
                             id="title"
-                            value={inputState[0].title}
+                            value={enteredTitle}
                             onChange={(event) => {
-                                const newValue = event.target.value;
-                                inputState[1]((prevInputState) => ({
-                                    title: newValue,
-                                    amount: prevInputState.amount
-                                }));
+                                setEnteredTitle(event.target.value);
                             }}
                         />
                     </div>
@@ -38,18 +36,15 @@ const IngredientForm = React.memo(props => {
                         <input
                             type="number"
                             id="amount"
-                            value={inputState[0].amount}
+                            value={enteredAmount}
                             onChange={(event) => {
-                                const newValue = event.target.value;
-                                inputState[1]((prevInputState) => ({
-                                    amount: newValue,
-                                    title: prevInputState.title
-                                }));
+                                setEnteredAmount(event.target.value);
                             }}
                         />
                     </div>
-                        <div className="ingredient-form__actions">
+                    <div className="ingredient-form__actions">
                         <button type="submit">Add Ingredient</button>
+                        {props.loading && <LoadingIndicator />}
                     </div>
                 </form>
             </Card>
